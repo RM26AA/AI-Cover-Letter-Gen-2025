@@ -86,9 +86,25 @@ export const CoverLetterForm = ({ onGenerate, isGenerating, setIsGenerating }: C
 
     setIsGenerating(true);
 
-    const prompt = `Generate a professional cover letter with the following information:
+    const today = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
 
-Personal Information:
+    const prompt = `Generate a professional cover letter with the following format and information:
+
+HEADER FORMAT (use actual data provided, not placeholders):
+${formData.fullName}
+${formData.email}${formData.phone ? `
+${formData.phone}` : ''}${formData.linkedIn ? `
+${formData.linkedIn}` : ''}
+
+${today}
+
+Then the cover letter content should be addressed to the company and position.
+
+Personal Information to use:
 - Name: ${formData.fullName}
 - Email: ${formData.email}
 - Phone: ${formData.phone}
@@ -115,7 +131,7 @@ Additional Information:
 - Keywords: ${formData.keywords}
 - Additional Notes: ${formData.additionalNotes}
 
-Please create a well-structured, professional cover letter that is tailored to this specific job and company. Include proper formatting with paragraphs and make it compelling and relevant.`;
+IMPORTANT: Do not use placeholders like [Your Name], [Your Email], etc. Use the actual information provided above. Start with the header format I specified, then write a compelling cover letter tailored to this specific job and company.`;
 
     try {
       const response = await fetch(
