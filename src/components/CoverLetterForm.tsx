@@ -37,9 +37,6 @@ interface FormData {
   achievements: string;
   keywords: string;
   additionalNotes: string;
-  
-  // API Key
-  apiKey: string;
 }
 
 interface CoverLetterFormProps {
@@ -69,7 +66,6 @@ export const CoverLetterForm = ({ onGenerate, isGenerating, setIsGenerating }: C
     achievements: "",
     keywords: "",
     additionalNotes: "",
-    apiKey: "",
   });
 
   const updateFormData = (field: keyof FormData, value: string) => {
@@ -77,14 +73,7 @@ export const CoverLetterForm = ({ onGenerate, isGenerating, setIsGenerating }: C
   };
 
   const generateCoverLetter = async () => {
-    if (!formData.apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Gemini API key to generate cover letters.",
-        variant: "destructive",
-      });
-      return;
-    }
+    const GEMINI_API_KEY = "AIzaSyDllQp6ryj1tAfopWyEMPrxua0SnQ3FJf0";
 
     if (!formData.fullName || !formData.jobTitle || !formData.companyName) {
       toast({
@@ -135,7 +124,7 @@ Please create a well-structured, professional cover letter that is tailored to t
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-goog-api-key": formData.apiKey.trim(),
+            "X-goog-api-key": GEMINI_API_KEY,
           },
           body: JSON.stringify({
             contents: [
@@ -171,7 +160,7 @@ Please create a well-structured, professional cover letter that is tailored to t
       console.error("Error generating cover letter:", error);
       toast({
         title: "Generation Failed",
-        description: "Failed to generate cover letter. Please check your API key and try again.",
+        description: "Failed to generate cover letter. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -181,31 +170,6 @@ Please create a well-structured, professional cover letter that is tailored to t
 
   return (
     <div className="space-y-6">
-      {/* API Key Section */}
-      <Card className="border-primary/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Settings className="h-4 w-4" />
-            API Configuration
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="apiKey">Gemini API Key</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              placeholder="Enter your Gemini API key"
-              value={formData.apiKey}
-              onChange={(e) => updateFormData("apiKey", e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Get your API key from Google AI Studio. Your key is stored locally and never saved.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Personal Information */}
       <Card>
         <CardHeader>
